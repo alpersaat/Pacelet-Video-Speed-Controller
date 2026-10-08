@@ -61,19 +61,18 @@ Unlike cluttered alternatives with bloated overlays, tracking scripts, or neon U
 ### Option 1: Chrome Web Store
 *(Coming soon once published)*
 
-### Option 2: Manual / Developer Mode (GitHub)
+### Option 2: Manual / Developer Mode
 
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/pacelet.git
-   ```
+1. **Download this repository:**
+   - Click the green **"<> Code"** button at the top right of this page and select **"Download ZIP"**.
+   - Extract the downloaded ZIP file to any folder on your computer.
 2. Open Google Chrome and navigate to:
    ```text
    chrome://extensions
    ```
 3. Enable **"Developer mode"** in the top-right corner.
 4. Click **"Load unpacked"** in the top-left corner.
-5. Select the `pacelet` (or project root) folder.
+5. Select the extracted project folder (the folder containing `manifest.json`).
 6. Done! Pacelet is now active on all HTML5 video players.
 
 ---
