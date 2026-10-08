@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacelet — Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="hk-container">
+    <!-- Üst Başlık -->
+    <header class="hk-header">
+      <div class="hk-brand">
+        <svg class="hk-logo" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="4 4 14 12 4 20 4 4"/>
+          <polygon points="12 4 22 12 12 20 12 4"/>
+        </svg>
+        <div>
+          <h1>Pacelet</h1>
+          <span class="hk-subtitle" data-i18n="preferences">Preferences</span>
+        </div>
+      </div>
+      <div class="hk-header-status" id="saveStatus">
+        <span class="hk-dot"></span> <span data-i18n="autoSaved">Auto-saved</span>
+      </div>
+    </header>
+
+    <!-- Kart 1: Oynatma & Hız Davranışı -->
+    <section class="hk-card">
+      <h2 class="hk-card-title" data-i18n="playbackAndSpeed">Playback & Speed</h2>
+
+      <!-- Dil Seçimi -->
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="language" data-i18n="languageLabel">Language</label>
+        </div>
+        <div class="hk-control">
+          <select id="language">
+            <option value="auto" data-i18n="langAuto">Auto (Browser Default)</option>
+            <option value="en" data-i18n="langEn">English</option>
+            <option value="tr" data-i18n="langTr">Türkçe</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="defaultSpeed" data-i18n="defaultSpeed">Default Initial Speed</label>
+        </div>
+        <div class="hk-control">
+          <input type="number" id="defaultSpeed" min="0.25" max="16.0" step="0.05" value="1.0">
+          <span class="hk-unit">×</span>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="speedStep" data-i18n="speedStep">Speed Step Increment</label>
+        </div>
+        <div class="hk-control">
+          <select id="speedStep">
+            <option value="0.05">0.05×</option>
+            <option value="0.1" selected>0.10×</option>
+            <option value="0.2">0.20×</option>
+            <option value="0.25">0.25×</option>
+            <option value="0.5">0.50×</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="fastSpeed" data-i18n="fastSpeed">Quick Toggle Speed (G key)</label>
+        </div>
+        <div class="hk-control">
+          <input type="number" id="fastSpeed" min="1.0" max="16.0" step="0.1" value="1.8">
+          <span class="hk-unit">×</span>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="rewindStep" data-i18n="seekStep">Seek Duration (Z / X keys)</label>
+        </div>
+        <div class="hk-control">
+          <select id="rewindStep">
+            <option value="5">5s</option>
+            <option value="10" selected>10s</option>
+            <option value="15">15s</option>
+            <option value="30">30s</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="preservesPitch" data-i18n="preservesPitch">Preserve Pitch (Pitch Correction)</label>
+          <span class="hk-hint" data-i18n="preservesPitchHint">Keeps natural voice timbre when speed changes (prevents chipmunk distortion)</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="preservesPitch" checked>
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="rememberSpeed" data-i18n="rememberSpeed">Remember Last Speed</label>
+          <span class="hk-hint" data-i18n="rememberSpeedHint">Automatically applies last used speed to new videos</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="rememberSpeed">
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kart 2: Görünüm & Göstergeler -->
+    <section class="hk-card">
+      <h2 class="hk-card-title" data-i18n="displayAndOverlay">Display & Overlay</h2>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="showOverlay" data-i18n="showOverlay">Show On-Video Controller</label>
+          <span class="hk-hint" data-i18n="showOverlayHint">Displays floating control pill in the corner of video players</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="showOverlay" checked>
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="overlayOpacityIdle" data-i18n="idleOpacity">Idle Opacity</label>
+        </div>
+        <div class="hk-control hk-range-box">
+          <input type="range" id="overlayOpacityIdle" min="0.1" max="1.0" step="0.05" value="0.35">
+          <span id="idleOpacityVal" class="hk-range-label">%35</span>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="autoHideDelay" data-i18n="autoHideDelay">Dimming Delay (Seconds)</label>
+        </div>
+        <div class="hk-control">
+          <select id="autoHideDelay">
+            <option value="1.0">1.0s</option>
+            <option value="2.0" selected>2.0s</option>
+            <option value="3.5">3.5s</option>
+            <option value="999">Never Dim</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kart 3: Klavye Kısayolları -->
+    <section class="hk-card">
+      <div class="hk-card-header">
+        <div>
+          <h2 class="hk-card-title" data-i18n="keyboardShortcuts">Keyboard Shortcuts</h2>
+        </div>
+        <button id="btnResetShortcuts" class="hk-btn-subtle" data-i18n="resetShortcuts">Reset Shortcuts</button>
+      </div>
+
+      <div class="hk-shortcuts-grid" id="shortcutsContainer">
+        <!-- JavaScript ile doldurulur -->
+      </div>
+    </section>
+
+    <!-- Kart 4: Site Yönetimi (Kara Liste) -->
+    <section class="hk-card">
+      <h2 class="hk-card-title" data-i18n="blacklistTitle">Domain Blacklist</h2>
+
+      <div class="hk-blacklist-bar">
+        <input type="text" id="blacklistInput" placeholder="e.g. netflix.com, primevideo.com" data-i18n-placeholder="blacklistPlaceholder">
+        <button id="btnAddBlacklist" class="hk-btn-primary" data-i18n="add">Add</button>
+      </div>
+
+      <div class="hk-chips-wrapper" id="blacklistChips">
+        <!-- JavaScript ile etiketler buraya gelir -->
+      </div>
+    </section>
+
+    <!-- Kart 5: Yedekleme ve Sıfırlama -->
+    <section class="hk-card hk-footer-card">
+      <div class="hk-footer-actions">
+        <button id="btnExportSettings" class="hk-btn-secondary" data-i18n="exportSettings">Export Settings (JSON)</button>
+        <label class="hk-btn-secondary hk-file-btn">
+          <span data-i18n="importSettings">Import Settings</span>
+          <input type="file" id="importFileInput" accept=".json" style="display:none;">
+        </label>
+        <button id="btnResetAll" class="hk-btn-danger" data-i18n="resetAll">Factory Reset</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Toast Bildirimi -->
+  <div id="hkToast" class="hk-toast" data-i18n="savedToast">Saved</div>
+
+  <script src="../shared/storage.js"></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

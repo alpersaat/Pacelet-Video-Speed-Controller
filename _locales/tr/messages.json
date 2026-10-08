@@ -1,0 +1,201 @@
+{
+  "extensionName": {
+    "message": "Pacelet — Video Speed Controller",
+    "description": "Eklentinin tam ismi."
+  },
+  "extensionShortName": {
+    "message": "Pacelet",
+    "description": "Eklentinin kısa ismi."
+  },
+  "extensionDescription": {
+    "message": "Ses tonunu koruyan, klavye kısayollarına ve sade bir göstergeye sahip minimalist HTML5 video hızlandırıcısı.",
+    "description": "Eklentinin mağaza açıklaması."
+  },
+  "connecting": {
+    "message": "Bağlanıyor"
+  },
+  "playing": {
+    "message": "Video Oynatılıyor"
+  },
+  "paused": {
+    "message": "Video Duraklatıldı"
+  },
+  "videoNotFound": {
+    "message": "Video Bulunamadı"
+  },
+  "siteActive": {
+    "message": "Site Aktif"
+  },
+  "siteDisabled": {
+    "message": "Site Devre Dışı"
+  },
+  "settings": {
+    "message": "Ayarlar"
+  },
+  "preferences": {
+    "message": "Tercihler"
+  },
+  "autoSaved": {
+    "message": "Otomatik kaydedilir"
+  },
+  "playbackAndSpeed": {
+    "message": "Oynatma & Hız"
+  },
+  "defaultSpeed": {
+    "message": "Varsayılan Başlangıç Hızı"
+  },
+  "speedStep": {
+    "message": "Hız Değişim Adımı"
+  },
+  "fastSpeed": {
+    "message": "Hızlı Mod Hızı (G tuşu)"
+  },
+  "seekStep": {
+    "message": "Sarma Süresi (Z / X tuşları)"
+  },
+  "preservesPitch": {
+    "message": "Ses Tonunu Koru (Pitch Correction)"
+  },
+  "preservesPitchHint": {
+    "message": "Hız arttığında sesin incelmesini engeller (sincaplaşmayı önler)"
+  },
+  "rememberSpeed": {
+    "message": "Son Hızı Hatırla"
+  },
+  "rememberSpeedHint": {
+    "message": "Yeni videolarda en son ayarlanan hızı otomatik uygular"
+  },
+  "displayAndOverlay": {
+    "message": "Görünüm & Gösterge"
+  },
+  "showOverlay": {
+    "message": "Video Üstü Kapsülü Göster"
+  },
+  "showOverlayHint": {
+    "message": "Video oynatılırken sol üstte yüzen kontrol panelini gösterir"
+  },
+  "idleOpacity": {
+    "message": "Boşta Dururken Saydamlık"
+  },
+  "autoHideDelay": {
+    "message": "Soluklaşma Süresi (Saniye)"
+  },
+  "languageLabel": {
+    "message": "Arayüz Dili (Language)"
+  },
+  "langAuto": {
+    "message": "Otomatik (Tarayıcı Dili)"
+  },
+  "langEn": {
+    "message": "English"
+  },
+  "langTr": {
+    "message": "Türkçe"
+  },
+  "keyboardShortcuts": {
+    "message": "Klavye Kısayolları"
+  },
+  "resetShortcuts": {
+    "message": "Kısayolları Sıfırla"
+  },
+  "blacklistTitle": {
+    "message": "Alan Adı Kara Listesi"
+  },
+  "blacklistPlaceholder": {
+    "message": "Örn: netflix.com"
+  },
+  "add": {
+    "message": "Ekle"
+  },
+  "backupTitle": {
+    "message": "Yedekleme & Sıfırlama"
+  },
+  "exportSettings": {
+    "message": "Ayarları Dışa Aktar (JSON)"
+  },
+  "importSettings": {
+    "message": "Ayarları İçe Aktar"
+  },
+  "resetAll": {
+    "message": "Fabrika Ayarlarına Dön"
+  },
+  "shortcutSlower": {
+    "message": "Hızı Yavaşlat"
+  },
+  "shortcutFaster": {
+    "message": "Hızı Artır"
+  },
+  "shortcutReset": {
+    "message": "Hızı Sıfırla (1.0x)"
+  },
+  "shortcutToggleFast": {
+    "message": "Hızlı Hıza Geç / Dön"
+  },
+  "shortcutRewind": {
+    "message": "Geri Sar"
+  },
+  "shortcutForward": {
+    "message": "İleri Sar"
+  },
+  "shortcutToggleOverlay": {
+    "message": "Paneli Gizle / Göster"
+  },
+  "shortcutMute": {
+    "message": "Sesi Kapat / Aç"
+  },
+  "dragHandleTooltip": {
+    "message": "Taşımak için sürükleyin"
+  },
+  "resetTooltip": {
+    "message": "Sıfırla"
+  },
+  "normalSpeedTooltip": {
+    "message": "Normal Hız"
+  },
+  "hideOverlayTooltip": {
+    "message": "Göstergeyi Gizle"
+  },
+  "mutedToast": {
+    "message": "Sessiz"
+  },
+  "unmutedToast": {
+    "message": "Ses Açık"
+  },
+  "savedToast": {
+    "message": "Kaydedildi"
+  },
+  "shortcutsResetToast": {
+    "message": "Kısayollar varsayılana sıfırlandı"
+  },
+  "factoryResetToast": {
+    "message": "Fabrika ayarlarına dönüldü"
+  },
+  "settingsExportedToast": {
+    "message": "Ayarlar indirildi"
+  },
+  "settingsImportedToast": {
+    "message": "Ayarlar başarıyla yüklendi"
+  },
+  "invalidFileToast": {
+    "message": "Geçersiz ayar dosyası formatı"
+  },
+  "popupFooterHint": {
+    "message": "Kısayollar: D / S (Hız) • R (1×) • G (Hızlı)"
+  },
+  "stepDownTooltip": {
+    "message": "Yavaşlat (-0.1)"
+  },
+  "stepResetTooltip": {
+    "message": "Normal Hız (1.0×)"
+  },
+  "stepUpTooltip": {
+    "message": "Hızlandır (+0.1)"
+  },
+  "rewind10Tooltip": {
+    "message": "10 Saniye Geri"
+  },
+  "forward10Tooltip": {
+    "message": "10 Saniye İleri"
+  }
+}
+

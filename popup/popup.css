@@ -1,0 +1,341 @@
+/* HızKontrol - Minimalist Dark Popup Stilleri (Linear / Apple Dark) */
+
+:root {
+  --bg-main: #121214;
+  --bg-card: #18181b;
+  --bg-hover: #27272a;
+  --bg-active: #3f3f46;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-focus: rgba(255, 255, 255, 0.2);
+  --text-main: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-dim: #71717a;
+  --accent: #38bdf8;
+  --accent-emerald: #34d399;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  width: 260px;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.hk-popup {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Başlık */
+.hk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hk-brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hk-logo {
+  width: 14px;
+  height: 14px;
+  color: var(--text-main);
+}
+
+.hk-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text-main);
+}
+
+.hk-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hk-status-pill {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--accent-emerald);
+  background: rgba(52, 211, 153, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.hk-status-pill.hk-inactive {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.hk-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.hk-icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-main);
+}
+
+.hk-icon-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Ana Hız Kartı */
+.hk-display-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.hk-speed-val-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hk-current-speed {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.hk-current-speed small {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.hk-fine-steppers {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.hk-step-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 6px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.hk-step-btn:hover {
+  background: var(--bg-active);
+  color: #fff;
+}
+
+.hk-step-btn:active {
+  transform: scale(0.95);
+}
+
+.hk-step-reset {
+  color: var(--text-main);
+}
+
+/* Hız Kaydırıcısı */
+.hk-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #27272a;
+  border-radius: 999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.hk-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.hk-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Hazır Hız Butonları (Presets) */
+.hk-presets-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.hk-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.hk-preset-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 0;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.hk-preset-btn:hover {
+  background: var(--bg-hover);
+  color: #fff;
+}
+
+.hk-preset-btn.active {
+  background: #f4f4f5;
+  border-color: #ffffff;
+  color: #09090b;
+  font-weight: 600;
+}
+
+/* Alt Kontroller */
+.hk-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 2px;
+}
+
+.hk-seek-group {
+  display: flex;
+  gap: 4px;
+}
+
+.hk-seek-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.hk-seek-btn:hover {
+  background: var(--bg-hover);
+  color: #fff;
+}
+
+.hk-site-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hk-site-name {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Minimalist Switch */
+.hk-mini-switch {
+  position: relative;
+  display: inline-block;
+  width: 28px;
+  height: 16px;
+}
+
+.hk-mini-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.hk-switch-track {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #27272a;
+  border-radius: 16px;
+  transition: 0.18s;
+}
+
+.hk-switch-track:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #a1a1aa;
+  border-radius: 50%;
+  transition: 0.18s;
+}
+
+input:checked + .hk-switch-track {
+  background-color: var(--accent-emerald);
+}
+
+input:checked + .hk-switch-track:before {
+  transform: translateX(12px);
+  background-color: #ffffff;
+}
+
+/* Alt Bilgi */
+.hk-footer {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.hk-footer strong {
+  color: var(--text-muted);
+}

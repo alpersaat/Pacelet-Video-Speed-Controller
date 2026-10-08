@@ -1,0 +1,201 @@
+{
+  "extensionName": {
+    "message": "Pacelet — Video Speed Controller",
+    "description": "The name of the extension."
+  },
+  "extensionShortName": {
+    "message": "Pacelet",
+    "description": "Short name of the extension."
+  },
+  "extensionDescription": {
+    "message": "Minimalist HTML5 video speed controller with pitch preservation, customizable shortcuts, and an unobtrusive overlay.",
+    "description": "The description of the extension."
+  },
+  "connecting": {
+    "message": "Connecting"
+  },
+  "playing": {
+    "message": "Playing"
+  },
+  "paused": {
+    "message": "Paused"
+  },
+  "videoNotFound": {
+    "message": "No Video Found"
+  },
+  "siteActive": {
+    "message": "Site Active"
+  },
+  "siteDisabled": {
+    "message": "Site Disabled"
+  },
+  "settings": {
+    "message": "Settings"
+  },
+  "preferences": {
+    "message": "Preferences"
+  },
+  "autoSaved": {
+    "message": "Auto-saved"
+  },
+  "playbackAndSpeed": {
+    "message": "Playback & Speed"
+  },
+  "defaultSpeed": {
+    "message": "Default Initial Speed"
+  },
+  "speedStep": {
+    "message": "Speed Step Increment"
+  },
+  "fastSpeed": {
+    "message": "Quick Toggle Speed (G key)"
+  },
+  "seekStep": {
+    "message": "Seek Duration (Z / X keys)"
+  },
+  "preservesPitch": {
+    "message": "Preserve Pitch (Pitch Correction)"
+  },
+  "preservesPitchHint": {
+    "message": "Keeps natural voice timbre when speed changes (prevents chipmunk distortion)"
+  },
+  "rememberSpeed": {
+    "message": "Remember Last Speed"
+  },
+  "rememberSpeedHint": {
+    "message": "Automatically applies last used speed to new videos"
+  },
+  "displayAndOverlay": {
+    "message": "Display & Overlay"
+  },
+  "showOverlay": {
+    "message": "Show On-Video Controller"
+  },
+  "showOverlayHint": {
+    "message": "Displays floating control pill in the corner of video players"
+  },
+  "idleOpacity": {
+    "message": "Idle Opacity"
+  },
+  "autoHideDelay": {
+    "message": "Dimming Delay (Seconds)"
+  },
+  "languageLabel": {
+    "message": "Language"
+  },
+  "langAuto": {
+    "message": "Auto (Browser Default)"
+  },
+  "langEn": {
+    "message": "English"
+  },
+  "langTr": {
+    "message": "Türkçe"
+  },
+  "keyboardShortcuts": {
+    "message": "Keyboard Shortcuts"
+  },
+  "resetShortcuts": {
+    "message": "Reset Shortcuts"
+  },
+  "blacklistTitle": {
+    "message": "Domain Blacklist"
+  },
+  "blacklistPlaceholder": {
+    "message": "e.g. netflix.com"
+  },
+  "add": {
+    "message": "Add"
+  },
+  "backupTitle": {
+    "message": "Backup & Reset"
+  },
+  "exportSettings": {
+    "message": "Export Settings (JSON)"
+  },
+  "importSettings": {
+    "message": "Import Settings"
+  },
+  "resetAll": {
+    "message": "Factory Reset"
+  },
+  "shortcutSlower": {
+    "message": "Decrease Speed"
+  },
+  "shortcutFaster": {
+    "message": "Increase Speed"
+  },
+  "shortcutReset": {
+    "message": "Reset Speed (1.0x)"
+  },
+  "shortcutToggleFast": {
+    "message": "Quick Speed Toggle"
+  },
+  "shortcutRewind": {
+    "message": "Rewind"
+  },
+  "shortcutForward": {
+    "message": "Forward"
+  },
+  "shortcutToggleOverlay": {
+    "message": "Hide / Show Overlay"
+  },
+  "shortcutMute": {
+    "message": "Mute / Unmute"
+  },
+  "dragHandleTooltip": {
+    "message": "Drag to reposition"
+  },
+  "resetTooltip": {
+    "message": "Reset"
+  },
+  "normalSpeedTooltip": {
+    "message": "Normal Speed"
+  },
+  "hideOverlayTooltip": {
+    "message": "Hide Controller"
+  },
+  "mutedToast": {
+    "message": "Muted"
+  },
+  "unmutedToast": {
+    "message": "Sound On"
+  },
+  "savedToast": {
+    "message": "Saved"
+  },
+  "shortcutsResetToast": {
+    "message": "Shortcuts reset to defaults"
+  },
+  "factoryResetToast": {
+    "message": "Reset to factory defaults"
+  },
+  "settingsExportedToast": {
+    "message": "Settings downloaded"
+  },
+  "settingsImportedToast": {
+    "message": "Settings successfully imported"
+  },
+  "invalidFileToast": {
+    "message": "Invalid settings file format"
+  },
+  "popupFooterHint": {
+    "message": "Shortcuts: D / S (Speed) • R (1×) • G (Quick)"
+  },
+  "stepDownTooltip": {
+    "message": "Slow down (-0.1)"
+  },
+  "stepResetTooltip": {
+    "message": "Normal Speed (1.0×)"
+  },
+  "stepUpTooltip": {
+    "message": "Speed up (+0.1)"
+  },
+  "rewind10Tooltip": {
+    "message": "10s Rewind"
+  },
+  "forward10Tooltip": {
+    "message": "10s Forward"
+  }
+}
+

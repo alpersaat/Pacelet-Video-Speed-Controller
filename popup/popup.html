@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacelet</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="hk-popup">
+    <!-- Başlık Çubuğu -->
+    <header class="hk-header">
+      <div class="hk-brand">
+        <svg class="hk-logo" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="4 4 14 12 4 20 4 4"/>
+          <polygon points="12 4 22 12 12 20 12 4"/>
+        </svg>
+        <span class="hk-title">Pacelet</span>
+      </div>
+      <div class="hk-header-actions">
+        <span class="hk-status-pill" id="mediaStatus" data-i18n="connecting">Connecting</span>
+        <button id="btnOptions" class="hk-icon-btn" title="Settings" data-i18n-title="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Ana Hız Kartı -->
+    <section class="hk-display-card">
+      <div class="hk-speed-val-row">
+        <span class="hk-current-speed" id="speedDisplay">1.00<small>×</small></span>
+        <div class="hk-fine-steppers">
+          <button id="btnStepDown" class="hk-step-btn" title="Slow down (-0.1)" data-i18n-title="stepDownTooltip">−0.1</button>
+          <button id="btnStepReset" class="hk-step-btn hk-step-reset" title="Normal Speed (1.0×)" data-i18n-title="stepResetTooltip">1.0×</button>
+          <button id="btnStepUp" class="hk-step-btn" title="Speed up (+0.1)" data-i18n-title="stepUpTooltip">+0.1</button>
+        </div>
+      </div>
+      <input type="range" id="speedSlider" min="0.25" max="4.0" step="0.05" value="1.0" class="hk-slider">
+    </section>
+
+    <!-- Hazır Hız Butonları -->
+    <section class="hk-presets-section">
+      <div class="hk-preset-grid">
+        <button class="hk-preset-btn" data-speed="0.75">0.75×</button>
+        <button class="hk-preset-btn active" data-speed="1.0">1.00×</button>
+        <button class="hk-preset-btn" data-speed="1.25">1.25×</button>
+        <button class="hk-preset-btn" data-speed="1.5">1.50×</button>
+        <button class="hk-preset-btn" data-speed="1.75">1.75×</button>
+        <button class="hk-preset-btn" data-speed="2.0">2.00×</button>
+        <button class="hk-preset-btn" data-speed="2.5">2.50×</button>
+        <button class="hk-preset-btn" data-speed="3.0">3.00×</button>
+      </div>
+    </section>
+
+    <!-- Hızlı Eylemler (Sarma & Site Anahtarı) -->
+    <section class="hk-bottom-controls">
+      <div class="hk-seek-group">
+        <button id="btnRewind" class="hk-seek-btn" title="10s Rewind" data-i18n-title="rewind10Tooltip">−10s</button>
+        <button id="btnForward" class="hk-seek-btn" title="10s Forward" data-i18n-title="forward10Tooltip">+10s</button>
+      </div>
+      <div class="hk-site-toggle-row">
+        <span class="hk-site-name" id="siteToggleLabel" data-i18n="siteActive">Site Active</span>
+        <label class="hk-mini-switch">
+          <input type="checkbox" id="siteToggleSwitch" checked>
+          <span class="hk-switch-track"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- Alt Kısayol İpucu -->
+    <footer class="hk-footer">
+      <span data-i18n="popupFooterHint">Shortcuts: <strong>D</strong> / <strong>S</strong> (Speed) &bull; <strong>R</strong> (1×) &bull; <strong>G</strong> (Quick)</span>
+    </footer>
+  </div>
+
+  <script src="../shared/storage.js"></script>
+  <script src="../shared/i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
