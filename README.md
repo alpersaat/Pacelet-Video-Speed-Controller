@@ -28,31 +28,40 @@ Unlike cluttered alternatives with bloated overlays, tracking scripts, or neon U
 ## ✨ Key Features
 
 - **🎯 Pitch Correction (`preservesPitch`):** Maintains natural vocal timbre and audio clarity even at 2×, 3×, or higher speeds.
+- **⏱️ Time Saved Tracker:** Automatic real-time statistics showing how many hours and minutes you saved by accelerating videos this week and all time (e.g., "Saved 3h 12m this week 🚀").
+- **🔁 A-B Repeat Loop:** Select Point A and Point B to loop video segments seamlessly—ideal for language learners, tutorials, and musicians.
+- **🖱️ Mouse Wheel Speed Tuning:** Smoothly adjust speed by scrolling the mouse wheel directly over the video controller capsule without scrolling the webpage.
+- **⚡ Customizable Speed Presets:** Select and customize quick speed preset buttons (e.g. 0.75×, 1.25×, 2.5×) in Settings, rendered dynamically in the Popup.
+- **🌐 Global Browser Shortcuts (`chrome.commands`):** Change playback speed even when the video page is not in active focus using Chrome global hotkeys (`Alt+Shift+D`, `Alt+Shift+S`, `Alt+Shift+R`, `Alt+Shift+G`, `Alt+Shift+L`).
+- **🌐 Per-Site Speed Memory:** Remember custom default playback speeds per website (e.g. YouTube at 1.5×, Udemy at 1.25×).
+- **🏷️ Toolbar Badge Display:** Displays the current active speed right over the extension toolbar icon (e.g. `1.5`, `1.25`, `2`) without needing any extra permissions.
+- **🛡️ Player Override Protection:** Automatically restores your selected speed if video players or mid-roll advertisements (like YouTube ads) attempt to force playback back to 1.0×.
+- **💾 JSON Backup & Export/Import:** Export your personalized shortcuts, site speeds, and preferences to a JSON backup file and import it anytime across devices.
 - **🛡️ Isolated Shadow DOM:** The on-player controller styles never leak into webpage styles, and site stylesheets cannot break Pacelet.
 - **⚡ Granular Speed Control:** Step by 0.05×, 0.1×, or any custom increment up to 16.0×.
-- **⌨️ Muscle-Memory Shortcuts:** Fully customizable hotkeys (`D` to speed up, `S` to slow down, `R` to reset, `G` to quick-toggle, etc.).
+- **⌨️ Muscle-Memory Shortcuts:** Fully customizable hotkeys (`D` to speed up, `S` to slow down, `R` to reset, `G` to quick-toggle, `L` to A-B loop, etc.).
 - **👆 Draggable & Auto-Dimming:** Drag the speed badge anywhere on the screen. It automatically fades when idle and illuminates on hover.
 - **🚀 YouTube SPA Compatible:** Seamlessly persists across YouTube video changes, playlists, and full-screen toggles.
 - **🚫 Site Blacklist:** Disable Pacelet on specific websites with a single click.
 - **🌍 Bilingual & i18n:** Full native English and Turkish support (auto-detects browser locale, with instant manual toggle in Settings).
-- **💾 JSON Backup & Sync:** Cloud sync via `chrome.storage.sync` with export/import functionality.
 
 ---
 
 ## ⌨️ Default Keyboard Shortcuts
 
-| Shortcut | Action | Description |
-| :---: | :--- | :--- |
-| <kbd>D</kbd> | **Increase Speed** | Accelerates playback by the configured step (Default: `+0.10×`) |
-| <kbd>S</kbd> | **Decrease Speed** | Decelerates playback by the configured step (Default: `-0.10×`) |
-| <kbd>R</kbd> | **Reset Speed** | Instantly resets playback speed back to `1.00×` |
-| <kbd>G</kbd> | **Quick Speed Toggle** | Toggles between preferred speed (Default: `1.80×`) and previous speed |
-| <kbd>Z</kbd> | **Rewind** | Seeks backward (Default: `-10s`) |
-| <kbd>X</kbd> | **Advance** | Seeks forward (Default: `+10s`) |
-| <kbd>V</kbd> | **Toggle Overlay** | Shows or hides the floating on-screen controller pill |
-| <kbd>M</kbd> | **Toggle Mute** | Mutes or unmutes the active media player |
+| Shortcut | Global (Chrome Commands) | Action | Description |
+| :---: | :---: | :--- | :--- |
+| <kbd>D</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | **Increase Speed** | Accelerates playback by the configured step (Default: `+0.10×`) |
+| <kbd>S</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> | **Decrease Speed** | Decelerates playback by the configured step (Default: `-0.10×`) |
+| <kbd>R</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> | **Reset Speed** | Instantly resets playback speed back to `1.00×` |
+| <kbd>G</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>G</kbd> | **Quick Speed Toggle** | Toggles between preferred speed (Default: `1.80×`) and previous speed |
+| <kbd>L</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | **A-B Loop** | Sets Point A, then Point B, or clears active loop |
+| <kbd>Z</kbd> | — | **Rewind** | Seeks backward (Default: `-10s`) |
+| <kbd>X</kbd> | — | **Advance** | Seeks forward (Default: `+10s`) |
+| <kbd>V</kbd> | — | **Toggle Overlay** | Shows or hides the floating on-screen controller pill |
+| <kbd>M</kbd> | — | **Toggle Mute** | Mutes or unmutes the active media player |
 
-> *Note: Shortcuts are intelligently disabled when typing in text fields, comments, or search bars (`<input>`, `<textarea>`, `contenteditable`).*
+> *Note: In-page shortcuts are intelligently disabled when typing in text fields, comments, or search bars (`<input>`, `<textarea>`, `contenteditable`). Global Chrome shortcuts work everywhere even outside page focus and can be reconfigured at `chrome://extensions/shortcuts`.*
 
 ---
 

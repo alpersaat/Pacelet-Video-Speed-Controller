@@ -59,8 +59,20 @@
   "preservesPitchHint": {
     "message": "Hız arttığında sesin incelmesini engeller (sincaplaşmayı önler)"
   },
+  "rememberSiteSpeed": {
+    "message": "Site Bazlı Hız Hafızası"
+  },
+  "rememberSiteSpeedHint": {
+    "message": "Her web sitesi için son ayarlanan hızı ayrı ayrı hatırlar ve otomatik uygular"
+  },
+  "preventSiteOverride": {
+    "message": "Sitenin Hızı Ezmesini Engelle"
+  },
+  "preventSiteOverrideHint": {
+    "message": "YouTube reklamları veya video oynatıcılar hızı 1.0'a sıfırladığında belirlediğiniz hızı otomatik geri yükler"
+  },
   "rememberSpeed": {
-    "message": "Son Hızı Hatırla"
+    "message": "Son Hızı Hatırla (Genel)"
   },
   "rememberSpeedHint": {
     "message": "Yeni videolarda en son ayarlanan hızı otomatik uygular"
@@ -68,11 +80,23 @@
   "displayAndOverlay": {
     "message": "Görünüm & Gösterge"
   },
+  "showBadge": {
+    "message": "Rozette Hız Gösterimi"
+  },
+  "showBadgeHint": {
+    "message": "Araç çubuğu simgesinin üzerinde anlık oynatma hızını gösterir (örn. 1.5)"
+  },
   "showOverlay": {
     "message": "Video Üstü Kapsülü Göster"
   },
   "showOverlayHint": {
     "message": "Video oynatılırken sol üstte yüzen kontrol panelini gösterir"
+  },
+  "hideInFullscreen": {
+    "message": "Tam Ekranda Kapsülü Gizle"
+  },
+  "hideInFullscreenHint": {
+    "message": "Video tam ekrana geçtiğinde kontrol kapsülünü ekrandan tamamen kaldırır"
   },
   "idleOpacity": {
     "message": "Boşta Dururken Saydamlık"
@@ -98,6 +122,15 @@
   "resetShortcuts": {
     "message": "Kısayolları Sıfırla"
   },
+  "siteSpeedsTitle": {
+    "message": "Site Bazlı Hız Profilleri"
+  },
+  "siteSpeedsHint": {
+    "message": "Her site için ayrı bir varsayılan hız belirleyin (örn. YouTube 1.5×, Udemy 1.25×)."
+  },
+  "siteSpeedDomainPlaceholder": {
+    "message": "Örn: youtube.com, udemy.com"
+  },
   "blacklistTitle": {
     "message": "Alan Adı Kara Listesi"
   },
@@ -106,6 +139,15 @@
   },
   "add": {
     "message": "Ekle"
+  },
+  "saveForSite": {
+    "message": "Kaydet"
+  },
+  "savedForSite": {
+    "message": "Kaydedildi"
+  },
+  "saveSiteSpeedTooltip": {
+    "message": "Mevcut hızı bu site için varsayılan olarak kaydet"
   },
   "backupTitle": {
     "message": "Yedekleme & Sıfırlama"
@@ -196,6 +238,78 @@
   },
   "forward10Tooltip": {
     "message": "10 Saniye İleri"
+  },
+  "customPresetsTitle": {
+    "message": "Hazır Hız Butonları"
+  },
+  "customPresetsHint": {
+    "message": "Açılır menüde (popup) gösterilen hazır hız butonlarını özelleştirin"
+  },
+  "addPreset": {
+    "message": "Hız Ekle"
+  },
+  "resetPresets": {
+    "message": "Varsayılanlara Sıfırla"
+  },
+  "invalidPresetToast": {
+    "message": "0.1 ile 16 arasında geçerli bir hız değeri girin"
+  },
+  "mouseWheelSpeed": {
+    "message": "Fare Tekerleğiyle Hız Ayarı"
+  },
+  "mouseWheelSpeedHint": {
+    "message": "Video üstündeki kapsülün üzerindeyken fare tekerleğini çevirerek hızı değiştirin"
+  },
+  "timeSavedTitle": {
+    "message": "Kazanılan Zaman"
+  },
+  "timeSavedWeeklyLabel": {
+    "message": "Bu hafta kazanılan:"
+  },
+  "timeSavedTodayLabel": {
+    "message": "Bugün kazanılan:"
+  },
+  "timeSavedTotalLabel": {
+    "message": "Toplam kazanılan:"
+  },
+  "timeSavedSuffix": {
+    "message": "kazandın 🚀"
+  },
+  "resetStats": {
+    "message": "İstatistikleri Sıfırla"
+  },
+  "statsResetToast": {
+    "message": "Zaman istatistikleri sıfırlandı"
+  },
+  "abLoopTitle": {
+    "message": "A-B Döngüsü"
+  },
+  "abLoopSetA": {
+    "message": "A Belirle"
+  },
+  "abLoopSetB": {
+    "message": "B Belirle"
+  },
+  "abLoopClear": {
+    "message": "Döngüyü Sıfırla"
+  },
+  "abLoopTooltip": {
+    "message": "A-B Tekrar Döngüsü"
+  },
+  "shortcutAbLoop": {
+    "message": "A-B Döngüsü (Belirle / Sıfırla)"
+  },
+  "globalShortcutsTitle": {
+    "message": "Chrome Genel Kısayolları"
+  },
+  "globalShortcutsHint": {
+    "message": "Sayfa odakta değilken bile video hızını değiştirin (chrome://extensions/shortcuts üzerinden düzenlenebilir)"
+  },
+  "openChromeShortcuts": {
+    "message": "Genel Kısayolları Ayarla"
+  },
+  "chromeShortcutsCopied": {
+    "message": "Kısayol ayar linki kopyalandı"
   }
 }
 

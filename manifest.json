@@ -22,6 +22,35 @@
     },
     "default_title": "Pacelet"
   },
+  "commands": {
+    "increase-speed": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Increase playback speed"
+    },
+    "decrease-speed": {
+      "suggested_key": {
+        "default": "Alt+Shift+S"
+      },
+      "description": "Decrease playback speed"
+    },
+    "reset-speed": {
+      "suggested_key": {
+        "default": "Alt+Shift+R"
+      },
+      "description": "Reset playback speed to 1.0x"
+    },
+    "toggle-fast": {
+      "suggested_key": {
+        "default": "Alt+Shift+G"
+      },
+      "description": "Toggle fast playback speed"
+    },
+    "toggle-ab-loop": {
+      "description": "Toggle A-B loop point or clear"
+    }
+  },
   "background": {
     "service_worker": "background/background.js"
   },

@@ -59,8 +59,20 @@
   "preservesPitchHint": {
     "message": "Keeps natural voice timbre when speed changes (prevents chipmunk distortion)"
   },
+  "rememberSiteSpeed": {
+    "message": "Per-Site Speed Memory"
+  },
+  "rememberSiteSpeedHint": {
+    "message": "Automatically remembers and applies custom speed for each website"
+  },
+  "preventSiteOverride": {
+    "message": "Prevent Site from Overriding Speed"
+  },
+  "preventSiteOverrideHint": {
+    "message": "Automatically restores your speed if the player or video ads reset it to 1.0 (e.g. YouTube)"
+  },
   "rememberSpeed": {
-    "message": "Remember Last Speed"
+    "message": "Remember Last Speed (Global)"
   },
   "rememberSpeedHint": {
     "message": "Automatically applies last used speed to new videos"
@@ -68,11 +80,23 @@
   "displayAndOverlay": {
     "message": "Display & Overlay"
   },
+  "showBadge": {
+    "message": "Show Speed on Toolbar Badge"
+  },
+  "showBadgeHint": {
+    "message": "Displays the active playback speed on the extension icon in the toolbar (e.g. 1.5)"
+  },
   "showOverlay": {
     "message": "Show On-Video Controller"
   },
   "showOverlayHint": {
     "message": "Displays floating control pill in the corner of video players"
+  },
+  "hideInFullscreen": {
+    "message": "Hide Controller in Fullscreen"
+  },
+  "hideInFullscreenHint": {
+    "message": "Completely hides the on-video pill overlay whenever the video enters fullscreen mode"
   },
   "idleOpacity": {
     "message": "Idle Opacity"
@@ -98,6 +122,15 @@
   "resetShortcuts": {
     "message": "Reset Shortcuts"
   },
+  "siteSpeedsTitle": {
+    "message": "Per-Site Speed Profiles"
+  },
+  "siteSpeedsHint": {
+    "message": "Set individual default speeds for specific websites (e.g. YouTube 1.5×, Udemy 1.25×)."
+  },
+  "siteSpeedDomainPlaceholder": {
+    "message": "e.g. youtube.com, udemy.com"
+  },
   "blacklistTitle": {
     "message": "Domain Blacklist"
   },
@@ -106,6 +139,15 @@
   },
   "add": {
     "message": "Add"
+  },
+  "saveForSite": {
+    "message": "Save"
+  },
+  "savedForSite": {
+    "message": "Saved"
+  },
+  "saveSiteSpeedTooltip": {
+    "message": "Save current speed as default for this site"
   },
   "backupTitle": {
     "message": "Backup & Reset"
@@ -196,6 +238,78 @@
   },
   "forward10Tooltip": {
     "message": "10s Forward"
+  },
+  "customPresetsTitle": {
+    "message": "Custom Speed Presets"
+  },
+  "customPresetsHint": {
+    "message": "Customize the quick preset speed buttons in the popup"
+  },
+  "addPreset": {
+    "message": "Add Preset"
+  },
+  "resetPresets": {
+    "message": "Reset Presets"
+  },
+  "invalidPresetToast": {
+    "message": "Enter a valid speed between 0.1 and 16"
+  },
+  "mouseWheelSpeed": {
+    "message": "Mouse Wheel Speed Adjustment"
+  },
+  "mouseWheelSpeedHint": {
+    "message": "Scroll mouse wheel over the on-video capsule to adjust speed"
+  },
+  "timeSavedTitle": {
+    "message": "Time Saved"
+  },
+  "timeSavedWeeklyLabel": {
+    "message": "Saved this week:"
+  },
+  "timeSavedTodayLabel": {
+    "message": "Saved today:"
+  },
+  "timeSavedTotalLabel": {
+    "message": "Total saved:"
+  },
+  "timeSavedSuffix": {
+    "message": "saved 🚀"
+  },
+  "resetStats": {
+    "message": "Reset Statistics"
+  },
+  "statsResetToast": {
+    "message": "Time statistics reset"
+  },
+  "abLoopTitle": {
+    "message": "A-B Loop"
+  },
+  "abLoopSetA": {
+    "message": "Set A"
+  },
+  "abLoopSetB": {
+    "message": "Set B"
+  },
+  "abLoopClear": {
+    "message": "Clear Loop"
+  },
+  "abLoopTooltip": {
+    "message": "A-B Repeat Loop"
+  },
+  "shortcutAbLoop": {
+    "message": "A-B Loop (Set / Clear)"
+  },
+  "globalShortcutsTitle": {
+    "message": "Chrome Global Shortcuts"
+  },
+  "globalShortcutsHint": {
+    "message": "Control video speed even when the page is not in focus (customize in chrome://extensions/shortcuts)"
+  },
+  "openChromeShortcuts": {
+    "message": "Configure Global Shortcuts"
+  },
+  "chromeShortcutsCopied": {
+    "message": "Shortcut settings link copied"
   }
 }
 

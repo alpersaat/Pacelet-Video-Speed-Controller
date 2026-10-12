@@ -107,7 +107,33 @@
 
       <div class="hk-row">
         <div class="hk-col">
-          <label for="rememberSpeed" data-i18n="rememberSpeed">Remember Last Speed</label>
+          <label for="rememberSiteSpeed" data-i18n="rememberSiteSpeed">Per-Site Speed Memory</label>
+          <span class="hk-hint" data-i18n="rememberSiteSpeedHint">Automatically remembers and applies custom speed for each website</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="rememberSiteSpeed" checked>
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="preventSiteOverride" data-i18n="preventSiteOverride">Prevent Site from Overriding Speed</label>
+          <span class="hk-hint" data-i18n="preventSiteOverrideHint">Automatically restores your speed if the player or video ads reset it to 1.0 (e.g. YouTube)</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="preventSiteOverride" checked>
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="rememberSpeed" data-i18n="rememberSpeed">Remember Last Speed (Global)</label>
           <span class="hk-hint" data-i18n="rememberSpeedHint">Automatically applies last used speed to new videos</span>
         </div>
         <div class="hk-control">
@@ -125,6 +151,19 @@
 
       <div class="hk-row">
         <div class="hk-col">
+          <label for="showBadge" data-i18n="showBadge">Show Speed on Toolbar Badge</label>
+          <span class="hk-hint" data-i18n="showBadgeHint">Displays the active playback speed on the extension icon in the toolbar (e.g. 1.5)</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="showBadge" checked>
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
           <label for="showOverlay" data-i18n="showOverlay">Show On-Video Controller</label>
           <span class="hk-hint" data-i18n="showOverlayHint">Displays floating control pill in the corner of video players</span>
         </div>
@@ -138,11 +177,37 @@
 
       <div class="hk-row">
         <div class="hk-col">
+          <label for="hideInFullscreen" data-i18n="hideInFullscreen">Hide Controller in Fullscreen</label>
+          <span class="hk-hint" data-i18n="hideInFullscreenHint">Completely hides the on-video pill overlay whenever the video enters fullscreen mode</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="hideInFullscreen">
+            <span class="hk-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
           <label for="overlayOpacityIdle" data-i18n="idleOpacity">Idle Opacity</label>
         </div>
         <div class="hk-control hk-range-box">
-          <input type="range" id="overlayOpacityIdle" min="0.1" max="1.0" step="0.05" value="0.35">
+          <input type="range" id="overlayOpacityIdle" min="0.0" max="1.0" step="0.05" value="0.35">
           <span id="idleOpacityVal" class="hk-range-label">%35</span>
+        </div>
+      </div>
+
+      <div class="hk-row">
+        <div class="hk-col">
+          <label for="mouseWheelSpeed" data-i18n="mouseWheelSpeed">Mouse Wheel Speed Adjustment</label>
+          <span class="hk-hint" data-i18n="mouseWheelSpeedHint">Scroll mouse wheel over the on-video capsule to adjust speed</span>
+        </div>
+        <div class="hk-control">
+          <label class="hk-switch">
+            <input type="checkbox" id="mouseWheelSpeed" checked>
+            <span class="hk-slider"></span>
+          </label>
         </div>
       </div>
 
@@ -161,6 +226,55 @@
       </div>
     </section>
 
+    <!-- Kart: Kaydedilen Zaman İstatistiği -->
+    <section class="hk-card hk-stats-dashboard-card">
+      <div class="hk-card-header">
+        <div>
+          <h2 class="hk-card-title" data-i18n="timeSavedTitle">Time Saved</h2>
+          <span class="hk-hint">Total time saved by speeding up video playback.</span>
+        </div>
+        <button id="btnResetStats" class="hk-btn-subtle" data-i18n="resetStats">Reset Statistics</button>
+      </div>
+
+      <div class="hk-stats-dashboard-grid">
+        <div class="hk-dash-stat-box">
+          <span class="hk-dash-stat-label" data-i18n="timeSavedWeeklyLabel">Saved this week:</span>
+          <span class="hk-dash-stat-val" id="statsWeekVal">0m</span>
+        </div>
+        <div class="hk-dash-stat-box">
+          <span class="hk-dash-stat-label" data-i18n="timeSavedTodayLabel">Saved today:</span>
+          <span class="hk-dash-stat-val" id="statsTodayVal">0m</span>
+        </div>
+        <div class="hk-dash-stat-box hk-dash-stat-total">
+          <span class="hk-dash-stat-label" data-i18n="timeSavedTotalLabel">Total saved:</span>
+          <span class="hk-dash-stat-val" id="statsTotalVal">0m</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kart: Hazır Hız Butonları (Popup Presets) -->
+    <section class="hk-card">
+      <div class="hk-card-header">
+        <div>
+          <h2 class="hk-card-title" data-i18n="customPresetsTitle">Custom Speed Presets</h2>
+          <span class="hk-hint" data-i18n="customPresetsHint">Customize the quick preset speed buttons in the popup.</span>
+        </div>
+        <button id="btnResetPresets" class="hk-btn-subtle" data-i18n="resetPresets">Reset Presets</button>
+      </div>
+
+      <div class="hk-site-speed-input-bar">
+        <div class="hk-site-speed-val-wrap">
+          <input type="number" id="presetValInput" min="0.1" max="16.0" step="0.05" value="1.20" class="hk-site-speed-input">
+          <span class="hk-unit">×</span>
+        </div>
+        <button id="btnAddPreset" class="hk-btn-primary" data-i18n="addPreset">Add Preset</button>
+      </div>
+
+      <div class="hk-site-speeds-list" id="presetChipsContainer">
+        <!-- JavaScript ile doldurulur -->
+      </div>
+    </section>
+
     <!-- Kart 3: Klavye Kısayolları -->
     <section class="hk-card">
       <div class="hk-card-header">
@@ -170,12 +284,44 @@
         <button id="btnResetShortcuts" class="hk-btn-subtle" data-i18n="resetShortcuts">Reset Shortcuts</button>
       </div>
 
+      <!-- Chrome Genel Kısayolları Bilgilendirmesi -->
+      <div class="hk-global-shortcuts-callout">
+        <div class="hk-global-shortcuts-text">
+          <strong data-i18n="globalShortcutsTitle">Chrome Global Shortcuts</strong>
+          <p data-i18n="globalShortcutsHint">Control video speed even when the page is not in focus (customize in chrome://extensions/shortcuts).</p>
+        </div>
+        <button id="btnConfigureGlobalShortcuts" class="hk-btn-secondary" data-i18n="openChromeShortcuts">Configure Global Shortcuts</button>
+      </div>
+
       <div class="hk-shortcuts-grid" id="shortcutsContainer">
         <!-- JavaScript ile doldurulur -->
       </div>
     </section>
 
-    <!-- Kart 4: Site Yönetimi (Kara Liste) -->
+    <!-- Kart 4: Site Bazlı Hız Profilleri -->
+    <section class="hk-card">
+      <div class="hk-card-header">
+        <div>
+          <h2 class="hk-card-title" data-i18n="siteSpeedsTitle">Per-Site Speed Profiles</h2>
+          <span class="hk-hint" data-i18n="siteSpeedsHint">Set individual default speeds for specific websites (e.g. YouTube 1.5×, Udemy 1.25×).</span>
+        </div>
+      </div>
+
+      <div class="hk-site-speed-input-bar">
+        <input type="text" id="siteSpeedDomainInput" placeholder="e.g. youtube.com, udemy.com" data-i18n-placeholder="siteSpeedDomainPlaceholder" class="hk-site-domain-input">
+        <div class="hk-site-speed-val-wrap">
+          <input type="number" id="siteSpeedValInput" min="0.25" max="16.0" step="0.05" value="1.50" class="hk-site-speed-input">
+          <span class="hk-unit">×</span>
+        </div>
+        <button id="btnAddSiteSpeed" class="hk-btn-primary" data-i18n="add">Add</button>
+      </div>
+
+      <div class="hk-site-speeds-list" id="siteSpeedsContainer">
+        <!-- JavaScript ile doldurulur -->
+      </div>
+    </section>
+
+    <!-- Kart 5: Site Yönetimi (Kara Liste) -->
     <section class="hk-card">
       <h2 class="hk-card-title" data-i18n="blacklistTitle">Domain Blacklist</h2>
 

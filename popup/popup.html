@@ -41,17 +41,58 @@
       <input type="range" id="speedSlider" min="0.25" max="4.0" step="0.05" value="1.0" class="hk-slider">
     </section>
 
-    <!-- Hazır Hız Butonları -->
+    <!-- Hazır Hız Butonları (Dinamik) -->
     <section class="hk-presets-section">
-      <div class="hk-preset-grid">
-        <button class="hk-preset-btn" data-speed="0.75">0.75×</button>
-        <button class="hk-preset-btn active" data-speed="1.0">1.00×</button>
-        <button class="hk-preset-btn" data-speed="1.25">1.25×</button>
-        <button class="hk-preset-btn" data-speed="1.5">1.50×</button>
-        <button class="hk-preset-btn" data-speed="1.75">1.75×</button>
-        <button class="hk-preset-btn" data-speed="2.0">2.00×</button>
-        <button class="hk-preset-btn" data-speed="2.5">2.50×</button>
-        <button class="hk-preset-btn" data-speed="3.0">3.00×</button>
+      <div class="hk-preset-grid" id="presetGrid">
+        <!-- JavaScript ile dinamik oluşturulur -->
+      </div>
+    </section>
+
+    <!-- A-B Döngüsü Kontrolleri -->
+    <section class="hk-ab-section">
+      <div class="hk-ab-header">
+        <span class="hk-ab-title" data-i18n="abLoopTitle">A-B Loop</span>
+        <span class="hk-ab-status" id="abLoopStatus">Off</span>
+      </div>
+      <div class="hk-ab-actions">
+        <button id="btnSetA" class="hk-ab-btn" title="Set Point A" data-i18n="abLoopSetA">Set A</button>
+        <button id="btnSetB" class="hk-ab-btn" title="Set Point B" data-i18n="abLoopSetB">Set B</button>
+        <button id="btnClearLoop" class="hk-ab-btn hk-ab-btn-clear" title="Clear Loop" data-i18n="abLoopClear">Clear</button>
+      </div>
+    </section>
+
+    <!-- Kaydedilen Zaman İstatistiği -->
+    <section class="hk-stats-card" id="timeStatsSection">
+      <div class="hk-stats-row">
+        <div class="hk-stats-left">
+          <span class="hk-stats-icon">⚡</span>
+          <div class="hk-stats-details">
+            <span class="hk-stats-label" data-i18n="timeSavedTitle">Time Saved</span>
+            <span class="hk-stats-highlight" id="statsWeeklySaved">0m</span>
+          </div>
+        </div>
+        <span class="hk-stats-total" id="statsTotalSaved">0m</span>
+      </div>
+    </section>
+
+    <!-- Site Bazlı Hız Çubuğu -->
+    <section class="hk-site-speed-section">
+      <div class="hk-site-speed-row">
+        <span class="hk-site-speed-info" id="siteSpeedInfo">
+          <svg class="hk-site-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span id="siteDomainLabel" class="hk-site-domain">Site</span>:
+          <strong id="siteSpeedValue">1.00×</strong>
+        </span>
+        <button id="btnSaveSiteSpeed" class="hk-site-pin-btn" title="Save current speed as default for this site" data-i18n-title="saveSiteSpeedTooltip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <span id="btnSaveSiteSpeedText" data-i18n="saveForSite">Save</span>
+        </button>
       </div>
     </section>
 

@@ -26,6 +26,21 @@
   };
 
   /**
+   * Araç çubuğu simgesindeki rozet hızını günceller
+   */
+  function updateBadge(speed) {
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+      chrome.runtime.sendMessage({
+        action: 'updateBadge',
+        speed: typeof speed === 'number' ? speed : 1.0,
+        showBadge: !currentSettings || currentSettings.showBadge !== false
+      }, () => {
+        if (chrome.runtime.lastError) { /* ignore */ }
+      });
+    }
+  }
+
+  /**
    * Ayarları yükle ve başlat
    */
   async function init() {
@@ -64,6 +79,18 @@
     // Tam ekran değişikliklerini izle
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+    // Sayfa kapandığında veya sekme arka plana geçtiğinde kaydedilen zamanı kaydet
+    const flushAllTimeStats = () => {
+      activeControllers.forEach(controller => {
+        controller.tickSavedTime();
+        controller.flushSavedTime();
+      });
+    };
+    window.addEventListener('beforeunload', flushAllTimeStats);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) flushAllTimeStats();
+    });
   }
 
   /**
@@ -144,12 +171,33 @@
       this.shadowRoot = null;
       this.pillEl = null;
       this.speedBadgeEl = null;
+      this.abLoopBtn = null;
       this.toastEl = null;
       this.hideTimer = null;
       this.isDragging = false;
       this.isHovered = false;
+      this.isInternalRateChange = false;
 
-      this.currentSpeed = media.playbackRate || (currentSettings && currentSettings.defaultSpeed) || 1.0;
+      // A-B Tekrar Döngüsü Durumu
+      this.abLoop = {
+        start: null,
+        end: null,
+        active: false
+      };
+
+      // Zaman İstatistiği Takibi
+      this.bufferedSavedSeconds = 0;
+      this.lastPlaybackTick = null;
+      this.statsTimer = null;
+
+      // Hiyerarşik başlangıç hızı: 1. Site hafızası, 2. Son hatırlanan hız, 3. Varsayılan hız
+      const host = window.location.hostname;
+      const effectiveSpeed = (typeof StorageManager !== 'undefined')
+        ? StorageManager.getEffectiveSpeed(host, currentSettings)
+        : ((currentSettings && currentSettings.defaultSpeed) || 1.0);
+
+      this.currentSpeed = effectiveSpeed;
+      this.userSpeed = effectiveSpeed;
       this.init();
     }
 
@@ -157,22 +205,90 @@
       // Ses tonu korumasını (pitch preservation) uygula
       this.applyPitchPreservation();
 
-      // Varsayılan başlangıç hızını ata
-      if (currentSettings && currentSettings.rememberSpeed && currentSettings.lastKnownSpeed) {
-        this.setSpeed(currentSettings.lastKnownSpeed, false);
-      } else if (currentSettings && currentSettings.defaultSpeed && currentSettings.defaultSpeed !== 1.0) {
-        this.setSpeed(currentSettings.defaultSpeed, false);
+      // Başlangıç hızını uygula
+      if (Math.abs(this.currentSpeed - 1.0) > 0.01) {
+        this.setSpeed(this.currentSpeed, false, false);
+      } else {
+        updateBadge(1.0);
       }
 
       // Medya hız değişimlerini dinle
       this.media.addEventListener('ratechange', () => {
-        if (Math.abs(this.media.playbackRate - this.currentSpeed) > 0.01) {
-          this.currentSpeed = this.media.playbackRate;
+        if (this.isInternalRateChange) {
+          return;
+        }
+
+        const actualRate = this.media.playbackRate;
+        const preventOverride = !currentSettings || currentSettings.preventSiteOverride !== false;
+
+        // Oynatıcı veya reklam hızı ezmeye çalıştığında (örn. YouTube reklam sonrası 1.0'a çekince) kullanıcının hızını geri yükle
+        if (preventOverride && this.userSpeed && Math.abs(actualRate - this.userSpeed) > 0.01) {
+          this.isInternalRateChange = true;
+          this.media.playbackRate = this.userSpeed;
+          this.applyPitchPreservation();
           this.updateDisplay();
+          updateBadge(this.userSpeed);
+          setTimeout(() => {
+            this.isInternalRateChange = false;
+          }, 100);
+          return;
+        }
+
+        if (Math.abs(actualRate - this.currentSpeed) > 0.01) {
+          this.currentSpeed = actualRate;
+          this.userSpeed = actualRate;
+          this.updateDisplay();
+          updateBadge(this.currentSpeed);
         }
         // Oynatıcı hız değiştirdiğinde ses tonu korumasını her zaman yenile
         this.applyPitchPreservation();
       });
+
+      // A-B Döngüsü Takibi
+      this.media.addEventListener('timeupdate', () => {
+        if (this.abLoop && this.abLoop.active && this.abLoop.start !== null && this.abLoop.end !== null) {
+          if (this.media.currentTime >= this.abLoop.end || this.media.currentTime < this.abLoop.start - 0.5) {
+            this.media.currentTime = this.abLoop.start;
+            if (this.media.paused) {
+              this.media.play().catch(() => {});
+            }
+          }
+        }
+      });
+
+      // Zaman İstatistiği Başlatma ve Durdurma Dinleyicileri
+      this.media.addEventListener('play', () => {
+        this.lastPlaybackTick = Date.now();
+        this.startStatsTracking();
+      });
+      this.media.addEventListener('pause', () => {
+        this.tickSavedTime();
+        this.flushSavedTime();
+        this.stopStatsTracking();
+      });
+      this.media.addEventListener('ended', () => {
+        this.tickSavedTime();
+        this.flushSavedTime();
+        this.stopStatsTracking();
+      });
+
+      // Reklam sonrası veya oynatma başladığında hızı kontrol edip gerekirse geri yükle
+      const restoreUserSpeed = () => {
+        const preventOverride = !currentSettings || currentSettings.preventSiteOverride !== false;
+        if (preventOverride && this.userSpeed && Math.abs(this.media.playbackRate - this.userSpeed) > 0.01) {
+          this.isInternalRateChange = true;
+          this.media.playbackRate = this.userSpeed;
+          this.applyPitchPreservation();
+          this.updateDisplay();
+          updateBadge(this.userSpeed);
+          setTimeout(() => {
+            this.isInternalRateChange = false;
+          }, 100);
+        }
+      };
+
+      this.media.addEventListener('playing', restoreUserSpeed);
+      this.media.addEventListener('loadedmetadata', restoreUserSpeed);
 
       // Video görünürlüğü/oynatımı kontrolü (yalnızca video için overlay ekle)
       if (!this.isAudio) {
@@ -274,6 +390,17 @@
         this.resetSpeed();
       });
 
+      // A-B Tekrar Döngüsü Butonu
+      const tLoop = typeof I18n !== 'undefined' ? I18n.t('abLoopTooltip', 'A-B Repeat Loop') : 'A-B Repeat Loop';
+      this.abLoopBtn = document.createElement('button');
+      this.abLoopBtn.className = 'hk-btn hk-btn-ab';
+      this.abLoopBtn.textContent = 'A-B';
+      this.abLoopBtn.innerHTML += `<div class="hk-tooltip">${tLoop} <kbd>${(shortcuts.abLoop?.key || 'l').toUpperCase()}</kbd></div>`;
+      this.abLoopBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.handleABLoopAction();
+      });
+
       // Gizle (X)
       const closeBtn = this.createButton('X', ICONS.close, tClose, shortcuts.toggleOverlay?.key, () => {
         this.hideOverlay();
@@ -284,6 +411,7 @@
       actionsGroup.appendChild(fasterBtn);
       actionsGroup.appendChild(rewindBtn);
       actionsGroup.appendChild(forwardBtn);
+      actionsGroup.appendChild(this.abLoopBtn);
       actionsGroup.appendChild(resetBtn);
       actionsGroup.appendChild(closeBtn);
 
@@ -296,6 +424,28 @@
       this.pillEl.appendChild(actionsGroup);
       this.pillEl.appendChild(this.toastEl);
 
+      // Fare tekerleğiyle hız ayarı (Kapsül üzerindeyken)
+      let accumulatedWheelDelta = 0;
+      let wheelResetTimer = null;
+      this.pillEl.addEventListener('wheel', (e) => {
+        if (currentSettings && currentSettings.mouseWheelSpeed === false) return;
+        e.preventDefault();
+        e.stopPropagation();
+
+        accumulatedWheelDelta += e.deltaY;
+        const threshold = 40;
+        if (Math.abs(accumulatedWheelDelta) >= threshold) {
+          const dir = accumulatedWheelDelta < 0 ? 1 : -1;
+          accumulatedWheelDelta = 0;
+          const step = (currentSettings && currentSettings.speedStep) || 0.1;
+          this.adjustSpeed(dir * step);
+        }
+        clearTimeout(wheelResetTimer);
+        wheelResetTimer = setTimeout(() => {
+          accumulatedWheelDelta = 0;
+        }, 180);
+      }, { passive: false });
+
       // Tıklamaların videoya sızmasını önle (video pause/play tetiklenmesin)
       this.pillEl.addEventListener('click', (e) => e.stopPropagation());
       this.pillEl.addEventListener('dblclick', (e) => e.stopPropagation());
@@ -307,6 +457,7 @@
       this.setupDragging(dragHandle);
       this.setupHoverAndIdle();
       this.updateDisplay();
+      this.updateABLoopUI();
     }
 
     createButton(text, iconSvg, tooltipText, shortcutKey, onClick) {
@@ -401,16 +552,20 @@
 
     setupHoverAndIdle() {
       const resetTimer = () => {
-        const hoverOp = (currentSettings && currentSettings.overlayOpacityHover) || '1.0';
+        const hoverOp = (currentSettings && currentSettings.overlayOpacityHover !== undefined) ? currentSettings.overlayOpacityHover : '1.0';
         this.hostElement.style.opacity = hoverOp;
+        this.hostElement.style.pointerEvents = 'auto';
         clearTimeout(this.hideTimer);
 
         if (!this.isHovered && !this.isDragging) {
           const delay = ((currentSettings && currentSettings.autoHideDelay) || 2.5) * 1000;
           this.hideTimer = setTimeout(() => {
             if (!this.isHovered && !this.isDragging) {
-              const idleOp = (currentSettings && currentSettings.overlayOpacityIdle) || '0.35';
+              const idleOp = (currentSettings && currentSettings.overlayOpacityIdle !== undefined) ? currentSettings.overlayOpacityIdle : 0.35;
               this.hostElement.style.opacity = idleOp;
+              if (Number(idleOp) === 0) {
+                this.hostElement.style.pointerEvents = 'none';
+              }
             }
           }, delay);
         }
@@ -418,8 +573,9 @@
 
       this.hostElement.addEventListener('mouseenter', () => {
         this.isHovered = true;
-        const hoverOp = (currentSettings && currentSettings.overlayOpacityHover) || '1.0';
+        const hoverOp = (currentSettings && currentSettings.overlayOpacityHover !== undefined) ? currentSettings.overlayOpacityHover : '1.0';
         this.hostElement.style.opacity = hoverOp;
+        this.hostElement.style.pointerEvents = 'auto';
         clearTimeout(this.hideTimer);
       });
 
@@ -432,19 +588,48 @@
       resetTimer();
     }
 
-    setSpeed(speed, showNotification = true) {
+    setSpeed(speed, showNotification = true, isUserAction = true) {
       const clamped = Math.min(16.0, Math.max(0.05, Math.round(speed * 100) / 100));
       this.currentSpeed = clamped;
+      if (isUserAction) {
+        this.userSpeed = clamped;
+      }
+
+      this.isInternalRateChange = true;
       this.media.playbackRate = clamped;
       this.applyPitchPreservation();
       this.updateDisplay();
+      updateBadge(clamped);
+
+      setTimeout(() => {
+        this.isInternalRateChange = false;
+      }, 100);
 
       if (showNotification) {
         this.showToast(this.formatSpeed(clamped));
       }
 
-      if (currentSettings && currentSettings.rememberSpeed) {
-        saveSettingsPartial({ lastKnownSpeed: clamped });
+      if (isUserAction && currentSettings) {
+        const partial = {};
+        // Site bazlı hız hafızası
+        if (currentSettings.rememberSiteSpeed !== false) {
+          const host = (typeof StorageManager !== 'undefined')
+            ? StorageManager.cleanHostname(window.location.hostname)
+            : window.location.hostname.replace(/^www\./, '');
+          if (host) {
+            const updatedSiteSpeeds = { ...(currentSettings.siteSpeeds || {}), [host]: clamped };
+            currentSettings.siteSpeeds = updatedSiteSpeeds;
+            partial.siteSpeeds = updatedSiteSpeeds;
+          }
+        }
+        // Genel son hız hafızası
+        if (currentSettings.rememberSpeed) {
+          partial.lastKnownSpeed = clamped;
+          currentSettings.lastKnownSpeed = clamped;
+        }
+        if (Object.keys(partial).length > 0) {
+          saveSettingsPartial(partial);
+        }
       }
     }
 
@@ -533,7 +718,161 @@
       return `${val.toFixed(2)}×`;
     }
 
+    // Zaman İstatistiği Metotları
+    startStatsTracking() {
+      if (!this.statsTimer) {
+        this.statsTimer = setInterval(() => {
+          this.tickSavedTime();
+        }, 2000);
+      }
+    }
+
+    stopStatsTracking() {
+      if (this.statsTimer) {
+        clearInterval(this.statsTimer);
+        this.statsTimer = null;
+      }
+    }
+
+    tickSavedTime() {
+      if (!this.media.paused && !this.media.ended && this.currentSpeed > 1.0) {
+        const now = Date.now();
+        if (this.lastPlaybackTick) {
+          const elapsedSec = (now - this.lastPlaybackTick) / 1000;
+          if (elapsedSec > 0 && elapsedSec <= 5) {
+            const savedSec = elapsedSec * (this.currentSpeed - 1.0);
+            this.bufferedSavedSeconds += savedSec;
+            if (this.bufferedSavedSeconds >= 5) {
+              this.flushSavedTime();
+            }
+          }
+        }
+        this.lastPlaybackTick = now;
+      } else {
+        this.lastPlaybackTick = Date.now();
+      }
+    }
+
+    flushSavedTime() {
+      if (this.bufferedSavedSeconds > 0) {
+        const secToSave = this.bufferedSavedSeconds;
+        this.bufferedSavedSeconds = 0;
+        if (typeof StorageManager !== 'undefined' && StorageManager.recordTimeSaved) {
+          StorageManager.recordTimeSaved(secToSave);
+        }
+      }
+    }
+
+    // A-B Tekrar Döngüsü Metotları
+    formatTime(seconds) {
+      const total = Math.max(0, Math.floor(seconds || 0));
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      if (m >= 60) {
+        const h = Math.floor(m / 60);
+        const remM = m % 60;
+        return `${h}:${String(remM).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    handleABLoopAction() {
+      if (this.abLoop.start === null) {
+        this.abLoop.start = Math.max(0, this.media.currentTime);
+        this.abLoop.end = null;
+        this.abLoop.active = false;
+        const msg = typeof I18n !== 'undefined'
+          ? (I18n.t('abLoopStartSet', 'Point A: {time}') || 'Point A: {time}').replace('{time}', this.formatTime(this.abLoop.start))
+          : `A: ${this.formatTime(this.abLoop.start)}`;
+        this.showToast(msg);
+      } else if (this.abLoop.end === null) {
+        let pos = this.media.currentTime;
+        if (pos <= this.abLoop.start) {
+          const temp = this.abLoop.start;
+          this.abLoop.start = pos;
+          this.abLoop.end = temp;
+        } else {
+          this.abLoop.end = pos;
+        }
+        this.abLoop.active = true;
+        this.media.currentTime = this.abLoop.start;
+        const msg = typeof I18n !== 'undefined'
+          ? (I18n.t('abLoopActive', 'Loop: {start} - {end}') || 'Loop: {start} - {end}')
+              .replace('{start}', this.formatTime(this.abLoop.start))
+              .replace('{end}', this.formatTime(this.abLoop.end))
+          : `A-B: ${this.formatTime(this.abLoop.start)} - ${this.formatTime(this.abLoop.end)}`;
+        this.showToast(msg);
+      } else {
+        this.clearABLoop();
+        const msg = typeof I18n !== 'undefined' ? I18n.t('abLoopCleared', 'Loop Cleared') : 'Loop Cleared';
+        this.showToast(msg);
+      }
+      this.updateABLoopUI();
+    }
+
+    clearABLoop() {
+      this.abLoop.start = null;
+      this.abLoop.end = null;
+      this.abLoop.active = false;
+      this.updateABLoopUI();
+    }
+
+    setABPoint(type) {
+      const cur = Math.max(0, this.media.currentTime);
+      if (type === 'A') {
+        this.abLoop.start = cur;
+        if (this.abLoop.end !== null && this.abLoop.end <= this.abLoop.start) {
+          this.abLoop.end = null;
+          this.abLoop.active = false;
+        }
+        const msg = typeof I18n !== 'undefined'
+          ? (I18n.t('abLoopStartSet', 'Point A: {time}') || 'Point A: {time}').replace('{time}', this.formatTime(this.abLoop.start))
+          : `A: ${this.formatTime(this.abLoop.start)}`;
+        this.showToast(msg);
+      } else if (type === 'B') {
+        if (this.abLoop.start === null) {
+          this.abLoop.start = Math.max(0, cur - 5);
+        }
+        if (cur <= this.abLoop.start) {
+          const temp = this.abLoop.start;
+          this.abLoop.start = cur;
+          this.abLoop.end = temp;
+        } else {
+          this.abLoop.end = cur;
+        }
+        this.abLoop.active = true;
+        this.media.currentTime = this.abLoop.start;
+        const msg = typeof I18n !== 'undefined'
+          ? (I18n.t('abLoopActive', 'Loop: {start} - {end}') || 'Loop: {start} - {end}')
+              .replace('{start}', this.formatTime(this.abLoop.start))
+              .replace('{end}', this.formatTime(this.abLoop.end))
+          : `A-B: ${this.formatTime(this.abLoop.start)} - ${this.formatTime(this.abLoop.end)}`;
+        this.showToast(msg);
+      } else if (type === 'clear') {
+        this.clearABLoop();
+        const msg = typeof I18n !== 'undefined' ? I18n.t('abLoopCleared', 'Loop Cleared') : 'Loop Cleared';
+        this.showToast(msg);
+      }
+      this.updateABLoopUI();
+    }
+
+    updateABLoopUI() {
+      if (!this.abLoopBtn) return;
+      this.abLoopBtn.classList.remove('hk-ab-waiting', 'hk-ab-active');
+      if (this.abLoop.start !== null && this.abLoop.end === null) {
+        this.abLoopBtn.textContent = 'A→';
+        this.abLoopBtn.classList.add('hk-ab-waiting');
+      } else if (this.abLoop.active) {
+        this.abLoopBtn.textContent = 'A-B';
+        this.abLoopBtn.classList.add('hk-ab-active');
+      } else {
+        this.abLoopBtn.textContent = 'A-B';
+      }
+    }
+
     destroy() {
+      this.stopStatsTracking();
+      this.flushSavedTime();
       clearTimeout(this.hideTimer);
       clearTimeout(this.toastTimer);
       if (this.hostElement && this.hostElement.parentElement) {
@@ -555,8 +894,14 @@
           fsElement.appendChild(controller.hostElement);
           controller.applySavedPosition();
         }
+        if (currentSettings && currentSettings.hideInFullscreen) {
+          controller.hostElement.style.display = 'none';
+        } else {
+          controller.hostElement.style.display = (currentSettings && currentSettings.showOverlay === false) ? 'none' : 'block';
+        }
       } else {
         controller.attachToDOM();
+        controller.hostElement.style.display = (currentSettings && currentSettings.showOverlay === false) ? 'none' : 'block';
       }
     });
   }
@@ -609,6 +954,9 @@
       } else if (pressedKey === (shortcuts.mute?.key || 'm').toLowerCase()) {
         e.preventDefault();
         controller.toggleMute();
+      } else if (pressedKey === (shortcuts.abLoop?.key || 'l').toLowerCase()) {
+        e.preventDefault();
+        controller.handleABLoopAction();
       }
     }, true);
   }
@@ -663,18 +1011,49 @@
       chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         if (request.action === 'getState') {
           const controller = getActiveOrFirstController();
+          const host = window.location.hostname;
+          const siteSpeed = (typeof StorageManager !== 'undefined')
+            ? StorageManager.getSiteSpeed(host, currentSettings?.siteSpeeds)
+            : null;
+
           sendResponse({
             found: !!controller,
             speed: controller ? controller.currentSpeed : 1.0,
+            userSpeed: controller ? controller.userSpeed : 1.0,
             paused: controller ? controller.media.paused : true,
-            isBlacklisted: isBlacklisted(window.location.hostname),
-            enabled: currentSettings ? currentSettings.enabled !== false : true
+            isBlacklisted: isBlacklisted(host),
+            enabled: currentSettings ? currentSettings.enabled !== false : true,
+            siteSpeed: siteSpeed,
+            abLoop: controller ? {
+              start: controller.abLoop.start,
+              end: controller.abLoop.end,
+              active: controller.abLoop.active
+            } : null,
+            currentTime: controller ? controller.media.currentTime : 0
           });
           return true;
         } else if (request.action === 'setSpeed') {
           const controller = getActiveOrFirstController();
           if (controller) {
-            controller.setSpeed(request.speed);
+            controller.setSpeed(request.speed, true, true);
+          }
+          sendResponse({ success: true });
+          return true;
+        } else if (request.action === 'setSiteSpeed') {
+          if (currentSettings) {
+            const host = (typeof StorageManager !== 'undefined')
+              ? StorageManager.cleanHostname(window.location.hostname)
+              : window.location.hostname.replace(/^www\./, '');
+            if (host) {
+              const updatedSiteSpeeds = { ...(currentSettings.siteSpeeds || {}) };
+              if (request.speed === null || request.speed === undefined) {
+                delete updatedSiteSpeeds[host];
+              } else {
+                updatedSiteSpeeds[host] = request.speed;
+              }
+              currentSettings.siteSpeeds = updatedSiteSpeeds;
+              saveSettingsPartial({ siteSpeeds: updatedSiteSpeeds });
+            }
           }
           sendResponse({ success: true });
           return true;
@@ -685,14 +1064,74 @@
           }
           sendResponse({ success: true });
           return true;
+        } else if (request.action === 'setABPoint') {
+          const controller = getActiveOrFirstController();
+          if (controller) {
+            controller.setABPoint(request.pointType);
+            sendResponse({
+              success: true,
+              abLoop: {
+                start: controller.abLoop.start,
+                end: controller.abLoop.end,
+                active: controller.abLoop.active
+              }
+            });
+          } else {
+            sendResponse({ success: false });
+          }
+          return true;
+        } else if (request.action === 'chromeCommand') {
+          const controller = getActiveOrFirstController();
+          if (controller) {
+            const step = (currentSettings && currentSettings.speedStep) || 0.1;
+            switch (request.command) {
+              case 'increase-speed':
+                controller.adjustSpeed(step);
+                break;
+              case 'decrease-speed':
+                controller.adjustSpeed(-step);
+                break;
+              case 'reset-speed':
+                controller.resetSpeed();
+                break;
+              case 'toggle-fast':
+                controller.toggleFastSpeed();
+                break;
+              case 'toggle-ab-loop':
+                controller.handleABLoopAction();
+                break;
+            }
+          }
+          sendResponse({ success: true });
+          return true;
         } else if (request.action === 'settingsUpdated') {
           loadSettings().then(s => {
             currentSettings = s;
+            const controller = getActiveOrFirstController();
+            if (controller) {
+              updateBadge(controller.currentSpeed);
+            }
             activeControllers.forEach(c => {
               c.applyPitchPreservation();
               c.updateDisplay();
+              c.updateABLoopUI();
               if (c.hostElement) {
-                c.hostElement.style.display = s.showOverlay !== false ? 'block' : 'none';
+                const fsElement = document.fullscreenElement || document.webkitFullscreenElement;
+                const isFs = !!fsElement && (fsElement.contains(c.media) || fsElement === c.media);
+                if (isFs && s.hideInFullscreen) {
+                  c.hostElement.style.display = 'none';
+                } else {
+                  c.hostElement.style.display = s.showOverlay !== false ? 'block' : 'none';
+                }
+                const idleOp = s.overlayOpacityIdle !== undefined ? s.overlayOpacityIdle : 0.35;
+                if (!c.isHovered) {
+                  c.hostElement.style.opacity = idleOp;
+                  if (Number(idleOp) === 0) {
+                    c.hostElement.style.pointerEvents = 'none';
+                  } else {
+                    c.hostElement.style.pointerEvents = 'auto';
+                  }
+                }
               }
             });
           });
@@ -835,7 +1274,7 @@
         pointer-events: none;
       }
       .hk-pill-container:hover .hk-actions-group {
-        max-width: 240px;
+        max-width: 280px;
         opacity: 1;
         pointer-events: auto;
         margin-left: 2px;
@@ -860,6 +1299,9 @@
       .hk-btn svg { width: 12px; height: 12px; }
       .hk-btn-reset { font-size: 10px; font-weight: 700; color: #d4d4d8; width: 22px; }
       .hk-btn-reset:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+      .hk-btn-ab { font-size: 10px; font-weight: 700; color: #a1a1aa; width: 26px; }
+      .hk-btn-ab.hk-ab-waiting { color: #f59e0b; background: rgba(245, 158, 11, 0.18); font-weight: 800; }
+      .hk-btn-ab.hk-ab-active { color: #10b981; background: rgba(16, 185, 129, 0.22); font-weight: 800; box-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
       .hk-btn-close:hover { color: #f87171; background: rgba(239, 68, 68, 0.18); }
       .hk-tooltip {
         position: absolute;

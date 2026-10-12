@@ -19,6 +19,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const blacklistInput = document.getElementById('blacklistInput');
   const btnAddBlacklist = document.getElementById('btnAddBlacklist');
   const blacklistChips = document.getElementById('blacklistChips');
+  const siteSpeedDomainInput = document.getElementById('siteSpeedDomainInput');
+  const siteSpeedValInput = document.getElementById('siteSpeedValInput');
+  const btnAddSiteSpeed = document.getElementById('btnAddSiteSpeed');
+  const siteSpeedsContainer = document.getElementById('siteSpeedsContainer');
   const shortcutsContainer = document.getElementById('shortcutsContainer');
   const btnResetShortcuts = document.getElementById('btnResetShortcuts');
   const btnExportSettings = document.getElementById('btnExportSettings');
@@ -26,10 +30,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnResetAll = document.getElementById('btnResetAll');
   const toastEl = document.getElementById('hkToast');
 
+  // Custom Presets Elements
+  const presetValInput = document.getElementById('presetValInput');
+  const btnAddPreset = document.getElementById('btnAddPreset');
+  const btnResetPresets = document.getElementById('btnResetPresets');
+  const presetChipsContainer = document.getElementById('presetChipsContainer');
+
+  // Time Stats Elements
+  const statsWeekVal = document.getElementById('statsWeekVal');
+  const statsTodayVal = document.getElementById('statsTodayVal');
+  const statsTotalVal = document.getElementById('statsTotalVal');
+  const btnResetStats = document.getElementById('btnResetStats');
+
+  // Global Shortcuts Config Button
+  const btnConfigureGlobalShortcuts = document.getElementById('btnConfigureGlobalShortcuts');
+
   // Populate fields
   populateFormFields();
   renderShortcuts();
   renderBlacklist();
+  renderSiteSpeeds();
+  renderPresets();
+  renderTimeStats();
 
   // General Settings
   bindAutoSave('defaultSpeed', 'number');
@@ -37,10 +59,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindAutoSave('fastSpeed', 'number');
   bindAutoSave('rewindStep', 'number');
   bindAutoSave('preservesPitch', 'checkbox');
+  bindAutoSave('rememberSiteSpeed', 'checkbox');
+  bindAutoSave('preventSiteOverride', 'checkbox');
   bindAutoSave('rememberSpeed', 'checkbox');
 
   // Display Settings
+  bindAutoSave('showBadge', 'checkbox');
   bindAutoSave('showOverlay', 'checkbox');
+  bindAutoSave('hideInFullscreen', 'checkbox');
+  bindAutoSave('mouseWheelSpeed', 'checkbox');
   bindAutoSave('autoHideDelay', 'float');
 
   // Language change
@@ -107,9 +134,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // Site-Specific Speeds
+  function addSiteSpeedProfile() {
+    if (!siteSpeedDomainInput || !siteSpeedValInput) return;
+    const rawDomain = siteSpeedDomainInput.value.trim();
+    if (!rawDomain) return;
+
+    const domain = StorageManager.cleanHostname(rawDomain);
+    if (!domain) return;
+
+    const speed = Math.min(16.0, Math.max(0.05, Math.round(parseFloat(siteSpeedValInput.value || 1.0) * 100) / 100));
+
+    if (!settings.siteSpeeds) settings.siteSpeeds = {};
+    settings.siteSpeeds[domain] = speed;
+
+    saveAndNotify();
+    renderSiteSpeeds();
+    showToast(`${domain} (${speed.toFixed(2)}×) +`);
+
+    siteSpeedDomainInput.value = '';
+    siteSpeedValInput.value = '1.50';
+  }
+
+  if (btnAddSiteSpeed) {
+    btnAddSiteSpeed.addEventListener('click', addSiteSpeedProfile);
+  }
+  if (siteSpeedDomainInput) {
+    siteSpeedDomainInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addSiteSpeedProfile();
+      }
+    });
+  }
+
   // Export Settings
   btnExportSettings.addEventListener('click', () => {
-    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(settings, null, 2));
+    const exportPayload = {
+      version: 2,
+      exportedAt: new Date().toISOString(),
+      paceletSettings: settings
+    };
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
     const a = document.createElement('a');
     a.href = dataStr;
     a.download = `pacelet-settings-${new Date().toISOString().slice(0, 10)}.json`;
@@ -127,8 +193,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
-        const imported = JSON.parse(event.target.result);
+        let imported = JSON.parse(event.target.result);
         if (typeof imported === 'object' && imported !== null) {
+          if (imported.paceletSettings && typeof imported.paceletSettings === 'object') {
+            imported = imported.paceletSettings;
+          }
           settings = await StorageManager.saveSettings(imported);
           if (settings.language) {
             I18n.init(settings.language);
@@ -137,6 +206,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           populateFormFields();
           renderShortcuts();
           renderBlacklist();
+          renderSiteSpeeds();
+          renderPresets();
+          renderTimeStats();
           showToast(I18n.t('settingsImportedToast', 'Settings successfully imported'));
           notifyTabs();
         } else {
@@ -164,6 +236,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       populateFormFields();
       renderShortcuts();
       renderBlacklist();
+      renderSiteSpeeds();
+      renderPresets();
+      renderTimeStats();
       showToast(I18n.t('factoryResetToast', 'Reset to factory defaults'));
       notifyTabs();
     }
@@ -179,12 +254,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('fastSpeed').value = settings.fastSpeed || 1.8;
     document.getElementById('rewindStep').value = String(settings.rewindStep || 10);
     document.getElementById('preservesPitch').checked = settings.preservesPitch !== false;
+    document.getElementById('rememberSiteSpeed').checked = settings.rememberSiteSpeed !== false;
+    document.getElementById('preventSiteOverride').checked = settings.preventSiteOverride !== false;
     document.getElementById('rememberSpeed').checked = !!settings.rememberSpeed;
 
+    document.getElementById('showBadge').checked = settings.showBadge !== false;
     document.getElementById('showOverlay').checked = settings.showOverlay !== false;
+    const hideInFsEl = document.getElementById('hideInFullscreen');
+    if (hideInFsEl) hideInFsEl.checked = !!settings.hideInFullscreen;
+    document.getElementById('mouseWheelSpeed').checked = settings.mouseWheelSpeed !== false;
     document.getElementById('autoHideDelay').value = String(settings.autoHideDelay || 2.0);
 
-    const idleValNum = settings.overlayOpacityIdle || 0.35;
+    const idleValNum = settings.overlayOpacityIdle !== undefined ? settings.overlayOpacityIdle : 0.35;
     if (idleRange) idleRange.value = idleValNum;
     if (idleVal) idleVal.textContent = `%${Math.round(idleValNum * 100)}`;
   }
@@ -204,7 +285,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       rewind: 'shortcutRewind',
       forward: 'shortcutForward',
       toggleOverlay: 'shortcutToggleOverlay',
-      mute: 'shortcutMute'
+      mute: 'shortcutMute',
+      abLoop: 'shortcutAbLoop'
     };
 
     Object.keys(shortcuts).forEach(actionKey => {
@@ -316,6 +398,181 @@ document.addEventListener('DOMContentLoaded', async () => {
       chip.appendChild(text);
       chip.appendChild(removeBtn);
       blacklistChips.appendChild(chip);
+    });
+  }
+
+  /**
+   * Render Site-Specific Speeds
+   */
+  function renderSiteSpeeds() {
+    if (!siteSpeedsContainer) return;
+    siteSpeedsContainer.innerHTML = '';
+    const siteSpeeds = settings.siteSpeeds || {};
+    const domains = Object.keys(siteSpeeds);
+
+    if (domains.length === 0) {
+      const empty = document.createElement('span');
+      empty.className = 'hk-no-chips';
+      empty.textContent = I18n.currentLang === 'tr'
+        ? 'Henüz site bazlı hız profili eklenmedi.'
+        : 'No site-specific speed profiles yet.';
+      siteSpeedsContainer.appendChild(empty);
+      return;
+    }
+
+    domains.forEach(domain => {
+      const speed = siteSpeeds[domain];
+      const chip = document.createElement('div');
+      chip.className = 'hk-site-chip';
+
+      const domainSpan = document.createElement('span');
+      domainSpan.className = 'hk-site-chip-domain';
+      domainSpan.textContent = domain;
+
+      const speedSpan = document.createElement('span');
+      speedSpan.className = 'hk-site-chip-speed';
+      speedSpan.textContent = `${Number(speed).toFixed(2)}×`;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.innerHTML = '&times;';
+      removeBtn.title = I18n.currentLang === 'tr' ? 'Kaldır' : 'Remove';
+      removeBtn.addEventListener('click', () => {
+        delete settings.siteSpeeds[domain];
+        saveAndNotify();
+        renderSiteSpeeds();
+        showToast(`${domain} -`);
+      });
+
+      chip.appendChild(domainSpan);
+      chip.appendChild(speedSpan);
+      chip.appendChild(removeBtn);
+      siteSpeedsContainer.appendChild(chip);
+    });
+  }
+
+  // Custom Presets
+  function renderPresets() {
+    if (!presetChipsContainer) return;
+    presetChipsContainer.innerHTML = '';
+    const presets = settings.customPresets || DEFAULT_SETTINGS.customPresets;
+
+    presets.forEach(speed => {
+      const chip = document.createElement('div');
+      chip.className = 'hk-site-chip';
+
+      const speedSpan = document.createElement('span');
+      speedSpan.className = 'hk-site-chip-speed';
+      speedSpan.textContent = `${Number(speed).toFixed(2).replace(/0$/, '')}×`;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.innerHTML = '&times;';
+      removeBtn.title = I18n.currentLang === 'tr' ? 'Kaldır' : 'Remove';
+      removeBtn.addEventListener('click', () => {
+        if (settings.customPresets.length <= 1) {
+          showToast(I18n.currentLang === 'tr' ? 'En az bir hazır hız bulunmalıdır.' : 'At least one preset must remain.');
+          return;
+        }
+        settings.customPresets = settings.customPresets.filter(s => Math.abs(s - speed) >= 0.01);
+        saveAndNotify();
+        renderPresets();
+        showToast(`${speed}× -`);
+      });
+
+      chip.appendChild(speedSpan);
+      chip.appendChild(removeBtn);
+      presetChipsContainer.appendChild(chip);
+    });
+  }
+
+  function addPreset() {
+    if (!presetValInput) return;
+    const val = Math.round(parseFloat(presetValInput.value || 0) * 100) / 100;
+    if (isNaN(val) || val < 0.1 || val > 16) {
+      showToast(I18n.t('invalidPresetToast', 'Enter a valid speed between 0.1 and 16'));
+      return;
+    }
+
+    if (!Array.isArray(settings.customPresets)) {
+      settings.customPresets = [...DEFAULT_SETTINGS.customPresets];
+    }
+
+    if (!settings.customPresets.some(s => Math.abs(s - val) < 0.01)) {
+      settings.customPresets.push(val);
+      settings.customPresets.sort((a, b) => a - b);
+      saveAndNotify();
+      renderPresets();
+      showToast(`${val}× +`);
+    }
+    presetValInput.value = '1.20';
+  }
+
+  if (btnAddPreset) btnAddPreset.addEventListener('click', addPreset);
+  if (presetValInput) {
+    presetValInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addPreset();
+      }
+    });
+  }
+
+  if (btnResetPresets) {
+    btnResetPresets.addEventListener('click', () => {
+      const confirmMsg = I18n.currentLang === 'tr'
+        ? 'Hazır hız butonlarını varsayılan değerlere sıfırlamak istiyor musunuz?'
+        : 'Reset preset speeds to default list?';
+      if (confirm(confirmMsg)) {
+        settings.customPresets = [...DEFAULT_SETTINGS.customPresets];
+        saveAndNotify();
+        renderPresets();
+        showToast(I18n.t('savedToast', 'Saved'));
+      }
+    });
+  }
+
+  // Time Saved Statistics
+  function renderTimeStats() {
+    if (!statsWeekVal || !statsTodayVal || !statsTotalVal) return;
+    const stats = settings.timeStats || { totalSecondsSaved: 0, todaySecondsSaved: 0, thisWeekSecondsSaved: 0 };
+    const lang = settings.language === 'en' ? 'en' : (I18n.currentLang || 'tr');
+
+    statsWeekVal.textContent = StorageManager.formatDuration(stats.thisWeekSecondsSaved, lang);
+    statsTodayVal.textContent = StorageManager.formatDuration(stats.todaySecondsSaved, lang);
+    statsTotalVal.textContent = StorageManager.formatDuration(stats.totalSecondsSaved, lang);
+  }
+
+  if (btnResetStats) {
+    btnResetStats.addEventListener('click', async () => {
+      const confirmMsg = I18n.currentLang === 'tr'
+        ? 'Kaydedilen zaman istatistikleri sıfırlansın mı?'
+        : 'Reset saved time statistics to zero?';
+      if (confirm(confirmMsg)) {
+        const newStats = await StorageManager.resetTimeStats();
+        settings.timeStats = newStats;
+        renderTimeStats();
+        showToast(I18n.t('statsResetToast', 'Time statistics reset'));
+      }
+    });
+  }
+
+  // Global Shortcuts Config Link
+  if (btnConfigureGlobalShortcuts) {
+    btnConfigureGlobalShortcuts.addEventListener('click', () => {
+      if (typeof chrome !== 'undefined' && chrome.tabs && chrome.tabs.create) {
+        chrome.tabs.create({ url: 'chrome://extensions/shortcuts' }).catch(() => {
+          copyShortcutsLink();
+        });
+      } else {
+        copyShortcutsLink();
+      }
+    });
+  }
+
+  function copyShortcutsLink() {
+    navigator.clipboard.writeText('chrome://extensions/shortcuts').then(() => {
+      showToast(I18n.t('chromeShortcutsCopied', 'Shortcut settings link copied'));
+    }).catch(() => {
+      prompt(I18n.t('globalShortcutsHint', 'Open in Chrome:'), 'chrome://extensions/shortcuts');
     });
   }
 

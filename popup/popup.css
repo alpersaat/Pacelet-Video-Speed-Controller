@@ -238,6 +238,86 @@ body {
   font-weight: 600;
 }
 
+/* Site Bazlı Hız Çubuğu */
+.hk-site-speed-section {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 6px 10px;
+}
+
+.hk-site-speed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hk-site-speed-info {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 170px;
+}
+
+.hk-site-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.hk-site-domain {
+  color: var(--text-main);
+  font-weight: 500;
+  max-width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.hk-site-speed-info strong {
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  margin-left: 2px;
+}
+
+.hk-site-pin-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  transition: all 0.15s ease;
+}
+
+.hk-site-pin-btn svg {
+  width: 10px;
+  height: 10px;
+}
+
+.hk-site-pin-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--accent);
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.hk-site-pin-btn.saved {
+  background: rgba(52, 211, 153, 0.15);
+  color: var(--accent-emerald);
+  border-color: rgba(52, 211, 153, 0.3);
+}
+
 /* Alt Kontroller */
 .hk-bottom-controls {
   display: flex;
@@ -324,6 +404,142 @@ input:checked + .hk-switch-track {
 input:checked + .hk-switch-track:before {
   transform: translateX(12px);
   background-color: #ffffff;
+}
+
+/* A-B Döngüsü Kartı */
+.hk-ab-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.hk-ab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hk-ab-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hk-ab-status {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.hk-ab-status.pending {
+  color: #f59e0b;
+}
+
+.hk-ab-status.active {
+  color: var(--accent-emerald);
+}
+
+.hk-ab-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.hk-ab-btn {
+  flex: 1;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-main);
+  border-radius: 5px;
+  padding: 4px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.hk-ab-btn:hover {
+  background: #323236;
+  border-color: var(--border-focus);
+}
+
+.hk-ab-btn.pending {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #f59e0b;
+}
+
+.hk-ab-btn.active {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: rgba(52, 211, 153, 0.4);
+  color: var(--accent-emerald);
+}
+
+.hk-ab-btn-clear {
+  flex: 0 0 auto;
+  color: var(--text-dim);
+}
+
+.hk-ab-btn-clear:hover {
+  color: #f87171;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* Kaydedilen Zaman İstatistiği Kartı */
+.hk-stats-card {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.08) 0%, rgba(52, 211, 153, 0.05) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.hk-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hk-stats-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hk-stats-icon {
+  font-size: 14px;
+  line-height: 1;
+}
+
+.hk-stats-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.hk-stats-label {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.hk-stats-highlight {
+  font-size: 12px;
+  font-weight: 700;
+  color: #38bdf8;
+  letter-spacing: -0.01em;
+}
+
+.hk-stats-total {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
 /* Alt Bilgi */

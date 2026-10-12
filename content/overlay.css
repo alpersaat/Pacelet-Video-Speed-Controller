@@ -124,7 +124,7 @@
 }
 
 .hk-pill-container:hover .hk-actions-group {
-  max-width: 240px;
+  max-width: 280px;
   opacity: 1;
   pointer-events: auto;
   margin-left: 2px;
@@ -172,6 +172,26 @@
 .hk-btn-reset:hover {
   color: #ffffff;
   background: rgba(255, 255, 255, 0.12);
+}
+
+.hk-btn-ab {
+  font-size: 10px;
+  font-weight: 700;
+  color: #a1a1aa;
+  width: 26px;
+}
+
+.hk-btn-ab.hk-ab-waiting {
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.18);
+  font-weight: 800;
+}
+
+.hk-btn-ab.hk-ab-active {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.22);
+  font-weight: 800;
+  box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
 }
 
 .hk-btn-close:hover {
